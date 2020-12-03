@@ -1,4 +1,7 @@
 # Repo for pyportal titano code that will be used for controlling 8 channel current source
+##  Code in the qt_py folder works... Other code is still in development
+* This code has been written for the Adafruit QT PY board.   But, it will also work on the titano.
+* It uses a different DAC.   Code for the 8 channel DAC needs to be added
 ##  Description of folders:
 -  adafruit-circuitpython-bundle-6.x-mpy-20201126:  has circuit python 6 libraries that correspond to uf2 file
 - titano_cpy_v5:  files from titano board that worked with v5 of circuit python
