@@ -1,4 +1,5 @@
 # Repo for pyportal titano code that will be used for controlling 8 channel current source
+## To be used in conjunction with code in this repo: https://github.com/saewoonam/webserial-current-source
 ##  Code in the qt_py folder works... Other code is still in development
 * This code has been written for the Adafruit QT PY board.   But, it will also work on the titano.
 * It uses a different DAC.   Code for the 8 channel DAC needs to be added
