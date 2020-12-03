@@ -119,5 +119,5 @@ while True:
                 # print('new_value', new_value)
                 set_dac(index, new_value)
             else:
-                print("command", command, args)
+                print("command", command[:-1], args)
 
