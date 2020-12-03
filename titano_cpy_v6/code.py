@@ -10,7 +10,7 @@ import digitalio
 import storage
 import adafruit_sdcard
 import supervisor
-
+import json
 # See if a card is present
 card_detect_pin = digitalio.DigitalInOut(board.SD_CARD_DETECT)
 card_detect_pin.direction = digitalio.Direction.INPUT
@@ -26,6 +26,11 @@ sdcard = adafruit_sdcard.SDCard(
 # Mount the card to a directory
 virtual_file_system = storage.VfsFat(sdcard)
 storage.mount(virtual_file_system, '/sd')
+a = {"a":1, "b":2}
+f = open('/sd/test.yaml', 'w')
+json.dump(a, f)
+f.close()
+
 def save_settings(values):
     with open('/sd/DAC.txt','w') as output_file:
         for i in range(8):
