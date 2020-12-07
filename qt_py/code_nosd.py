@@ -7,9 +7,11 @@ import storage
 import supervisor
 import adafruit_mcp4728
 from default_values import default_values
+import AD5675
 
 i2c = busio.I2C(board.SCL, board.SDA)
-mcp4728 =  adafruit_mcp4728.MCP4728(i2c)
+# mcp4728 =  adafruit_mcp4728.MCP4728(i2c)
+dac = AD5675.AD5675(i2c)
 
 _SETTINGS_FILENAME = '/DAC.json'
 def to_json(array):
@@ -48,14 +50,16 @@ def set_dac(index, value):
         print('zero device', index, value)
         dac_value = 0 # or midscale...
 
-    if index==0:
-        mcp4728.channel_a.value = dac_value
-    elif index==1:
-        mcp4728.channel_b.value = dac_value
-    elif index==2:
-        mcp4728.channel_c.value = dac_value
-    elif index==3:
-        mcp4728.channel_d.value = dac_value
+    dac.set(index, dac_value)
+
+    # if index==0:
+    #     mcp4728.channel_a.value = dac_value
+    # elif index==1:
+    #     mcp4728.channel_b.value = dac_value
+    # elif index==2:
+    #     mcp4728.channel_c.value = dac_value
+    # elif index==3:
+    #     mcp4728.channel_d.value = dac_value
 
     # update display
 
