@@ -9,7 +9,7 @@ import adafruit_mcp4728
 import AD5675
 from default_values import default_values
 
-def mcp4728_set(index, dac_value):
+def mcp4728_set(dac_value, index):
     dac_value = int(abs(dac_value) / 3.3 * 65535)
     if index==0:
         mcp4728.channel_a.value = dac_value
@@ -23,7 +23,7 @@ def mcp4728_set(index, dac_value):
 class fake:
     def __init__(self):
         return
-    def set(index, dev_value):
+    def set(dac_value, index):
         return
 
 try:
@@ -68,7 +68,7 @@ except Exception as e:
     # values = default_values
     # save_settings_json(values)
 
-def set_dac(index, value):
+def set_dac(value, index):
     values[index] = value
     # print('set_dac')
     # update hardware
