@@ -10,6 +10,7 @@ import AD5675
 from default_values import default_values
 
 def mcp4728_set(index, dac_value):
+    dac_value = int(abs(dac_value) / 3.3 * 65535)
     if index==0:
         mcp4728.channel_a.value = dac_value
     elif index==1:
@@ -38,7 +39,7 @@ if 96 in addresses:
     dac = adafruit_mcp4728.MCP4728(i2c)
     dac.set = mcp4728_set
 elif 12 in addresses:
-    dac = AD5675.AD5675(i2c)
+    dac = AD5675.AD5675(i2c, offset=1.25)
 else:
     dac = fake();
 
@@ -74,11 +75,11 @@ def set_dac(index, value):
     # check if not 'zeroed'
     if values[index][2]:
         print("bias device", index, value)
-        dac_value = int(value[1] / 100 * 65535)
+        dac_value = (value[1] / 100)
     else:
         print('zero device', index, value)
         dac_value = 0 # or midscale...
-    dac.set(index, dac_value)
+    dac.set(dac_value, index)
     # update display
 
 def check_int(s):
