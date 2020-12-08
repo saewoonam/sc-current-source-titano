@@ -6,12 +6,41 @@ import digitalio
 import storage
 import supervisor
 import adafruit_mcp4728
-from default_values import default_values
 import AD5675
+from default_values import default_values
 
-i2c = busio.I2C(board.SCL, board.SDA)
-# mcp4728 =  adafruit_mcp4728.MCP4728(i2c)
-dac = AD5675.AD5675(i2c)
+def mcp4728_set(index, dac_value):
+    if index==0:
+        mcp4728.channel_a.value = dac_value
+    elif index==1:
+        mcp4728.channel_b.value = dac_value
+    elif index==2:
+        mcp4728.channel_c.value = dac_value
+    elif index==3:
+        mcp4728.channel_d.value = dac_value
+
+class fake:
+    def __init__(self):
+        return
+    def set(index, dev_value):
+        return
+
+try:
+    i2c = busio.I2C(board.SCL, board.SDA)
+    i2c.try_lock()
+    addresses = i2c.scan()
+    i2c.unlock()
+except Exception as e:
+    print("problem with i2c", e)
+    addresses = []
+print(addresses)
+if 96 in addresses:
+    dac = adafruit_mcp4728.MCP4728(i2c)
+    dac.set = mcp4728_set
+elif 12 in addresses:
+    dac = AD5675.AD5675(i2c)
+else:
+    dac = fake();
 
 _SETTINGS_FILENAME = '/DAC.json'
 def to_json(array):
@@ -49,18 +78,7 @@ def set_dac(index, value):
     else:
         print('zero device', index, value)
         dac_value = 0 # or midscale...
-
     dac.set(index, dac_value)
-
-    # if index==0:
-    #     mcp4728.channel_a.value = dac_value
-    # elif index==1:
-    #     mcp4728.channel_b.value = dac_value
-    # elif index==2:
-    #     mcp4728.channel_c.value = dac_value
-    # elif index==3:
-    #     mcp4728.channel_d.value = dac_value
-
     # update display
 
 def check_int(s):

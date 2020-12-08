@@ -1,1 +1,5 @@
 Adafruit CircuitPython 6.0.0 on 2020-11-16; Adafruit QT Py M0 with samd21e18
+boot.py output:
+Traceback (most recent call last):
+  File "boot.py", line 3, in <module>
+OSError: [Errno 2] No such file/directory: '/readonly.txt'
