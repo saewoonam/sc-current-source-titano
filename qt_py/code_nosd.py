@@ -23,7 +23,7 @@ def mcp4728_set(dac_value, index):
 class fake:
     def __init__(self):
         return
-    def set(dac_value, index):
+    def set(self, dac_value, index):
         return
 
 try:
@@ -68,14 +68,18 @@ except Exception as e:
     # values = default_values
     # save_settings_json(values)
 
-def set_dac(value, index):
-    values[index] = value
-    # print('set_dac')
+def set_dac(index, value):
+    if type(value)==int:
+        values[index][1] = value
+        value = values[index]
+    else:
+        values[index] = value
+    print('set_dac', value)
     # update hardware
     # check if not 'zeroed'
     if values[index][2]:
         print("bias device", index, value)
-        dac_value = (value[1] / 100)
+        dac_value = (values[index][1] / 100)
     else:
         print('zero device', index, value)
         dac_value = 0 # or midscale...
@@ -113,11 +117,14 @@ while True:
                 save_settings_json(values)
             if command.upper()=='Z':
                 # set all values to zero
+                # print("set all to zero")
                 for i in range(len(values)):
-                    set_dac(i, 0);
+                    values[i][2] = False
+                    set_dac(i, values[i])
             if command.upper()=='R':
-                # set all values to zero
+                # bias all 
                 for i in range(len(values)):
+                    values[i][2] = True
                     set_dac(i, values[i]);
 
         else:  # len(msg)==2
