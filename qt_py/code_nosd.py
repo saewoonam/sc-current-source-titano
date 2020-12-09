@@ -41,7 +41,7 @@ if 96 in addresses:
 elif 12 in addresses:
     dac = AD5675.AD5675(i2c, offset=1.25)
 else:
-    dac = fake();
+    dac = AD5675.AD5675(None, offset=1.25);
 
 _SETTINGS_FILENAME = '/DAC.json'
 def to_json(array):
@@ -78,10 +78,10 @@ def set_dac(index, value):
     # update hardware
     # check if not 'zeroed'
     if values[index][2]:
-        print("bias device", index, value)
+        # print("bias device", index, value)
         dac_value = (values[index][1] / 100)
     else:
-        print('zero device', index, value)
+        # print('zero device', index, value)
         dac_value = 0 # or midscale...
     dac.set(dac_value, index)
     # update display

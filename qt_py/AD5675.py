@@ -16,7 +16,10 @@ class AD5675:
     """
 
     def __init__(self, i2c_bus, offset=0, address=12):
-        self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+        if i2c_bus is not None:
+            self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+        else:
+            self.i2c_device = None
         self.offset = offset
 
     def _read_registers(self):
@@ -32,8 +35,10 @@ class AD5675:
         return buf
     def set(self, value, ch=0):
         digital = int((value+self.offset)/_FULL_SCALE * (1<<16))
+        print('AD5675 set', digital, ch)
         high = digital >> 8
         low = digital & 0xFF
         command = 0x30  # 0x10 will also work since ~LDAC is held low
-        with self.i2c_device as i2c:
-            i2c.write(bytes([command+ch, high, low]))
+        if self.i2c_device is not None:
+            with self.i2c_device as i2c:
+                i2c.write(bytes([command+ch, high, low]))
