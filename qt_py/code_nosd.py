@@ -74,7 +74,7 @@ def set_dac(index, value):
         value = values[index]
     else:
         values[index] = value
-    print('set_dac', value)
+    # print('set_dac', value)
     # update hardware
     # check if not 'zeroed'
     if values[index][2]:

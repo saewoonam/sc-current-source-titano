@@ -1,1 +1,3 @@
 Adafruit CircuitPython 6.0.0 on 2020-11-16; Adafruit PyPortal with samd51j20
+boot.py output:
+readonly
