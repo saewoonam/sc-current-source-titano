@@ -149,5 +149,8 @@ while True:
                 set_dac(index, new_value)
             elif command.upper()=='N':
                 board_name = args;
+                if not _READONLY:
+                    set_readonly.set_name(board_name)
+                    # print("set name")
             else:
                 print("command", command[:-1], args)
