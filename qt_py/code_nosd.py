@@ -8,6 +8,9 @@ import supervisor
 import adafruit_mcp4728
 import AD5675
 from default_values import default_values
+import set_readonly
+
+_READONLY = True
 
 def mcp4728_set(dac_value, index):
     dac_value = int(abs(dac_value) / 3.3 * 65535)
@@ -52,8 +55,10 @@ def from_json(string_in):
     return eval(string_in.replace('false', 'False').replace('true', 'True'))
 
 def save_settings_json(values):
-    with open(_SETTINGS_FILENAME,'w') as output_file:
-        json.dump(values, output_file)
+    if not _READONLY:
+        with open(_SETTINGS_FILENAME,'w') as output_file:
+            output_file.write(to_json(values))
+            # json.dump(values, output_file)
 
 def read_settings_json():
     with open(_SETTINGS_FILENAME,'r') as input_file:
@@ -96,6 +101,8 @@ last_selected = -1
 last_op = -1
 last_op_time = 0
 step = 0.001
+_READONLY = set_readonly.get_readonly()
+board_name = set_readonly.get_name()
 while True:
     if supervisor.runtime.serial_bytes_available:
         msg = input()
@@ -108,9 +115,14 @@ while True:
         if len(args)==0:
             if command.endswith('?'):
                 #  Need to really check if integer
-                index = int(command[:-1])
-                #  Check if index is in range
-                print(index, to_json(values[index]))
+                if check_int(command[:-1]):
+                    index = int(command[:-1])
+                    #  Should Check if index is in range
+                    print(index, to_json(values[index]))
+                else:
+                    cmd = command[:-1].upper()
+                    if cmd=='N':
+                        print('board_name', board_name)
             if command.upper()=='S':
                 save_settings(values)
             if command.upper()=='J':
@@ -135,5 +147,7 @@ while True:
                 new_value = from_json(args)
                 # print('new_value', new_value)
                 set_dac(index, new_value)
+            elif command.upper()=='N':
+                board_name = args;
             else:
                 print("command", command[:-1], args)
