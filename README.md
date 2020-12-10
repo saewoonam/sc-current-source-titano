@@ -3,10 +3,10 @@
 ##  Code in the qt_py folder works... Other code is still in development
 * This code has been written for the Adafruit QT PY board.   But, it will also work on the titano.
 * It uses a different DAC.   Code for the 8 channel DAC needs to be added
-* Installation
-  -  Make sure circuitpython is installed
+* ### Installation
+  -  Make sure circuitpython is installed, if not follow these [instructions](https://learn.adafruit.com/adafruit-qt-py/circuitpython)
   -  Copy contents of qt_py folder into the "CIRCUITPY" disk that represents the flash storage on the microcontroller
-  -  Reset the device by hitting the reset button on the back or unplug/plug board back in to USB porot
+  -  Reset the device by hitting the reset button on the back or unplug/plug board back in to USB port
 ##  Description of folders:
 -  adafruit-circuitpython-bundle-6.x-mpy-20201126:  has circuit python 6 libraries that correspond to uf2 file
 - titano_cpy_v5:  files from titano board that worked with v5 of circuit python
