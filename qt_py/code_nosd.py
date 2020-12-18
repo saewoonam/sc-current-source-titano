@@ -79,6 +79,19 @@ def set_dac(index, value):
         value = values[index]
     else:
         values[index] = value
+    # check if value  is a dac_value
+    if type(value)==str:
+        dac_value = True
+        value = int(value[1:])
+    else:
+        dac_value = False
+
+    if len(values[index])==3:
+        values[index].append(32768)
+        dac_offset = 32768
+    else:
+        dac_offset = values[index][3]
+
     # print('set_dac', value)
     # update hardware
     # check if not 'zeroed'
@@ -88,7 +101,7 @@ def set_dac(index, value):
     else:
         # print('zero device', index, value)
         dac_value = 0 # or midscale...
-    dac.set(dac_value, index)
+    dac.set(dac_value, index, use_dac_value=dac_value, dac_offset=dac_offset)
     # update display
 
 def check_int(s):
@@ -134,7 +147,7 @@ while True:
                     values[i][2] = False
                     set_dac(i, values[i])
             if command.upper()=='R':
-                # bias all 
+                # bias all
                 for i in range(len(values)):
                     values[i][2] = True
                     set_dac(i, values[i]);

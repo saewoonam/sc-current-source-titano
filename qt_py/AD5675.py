@@ -33,8 +33,12 @@ class AD5675:
             i2c.readinto(buf)
 
         return buf
-    def set(self, value, ch=0):
-        digital = int((value+self.offset)/_FULL_SCALE * (1<<16))
+    def set(self, value, ch=0, use_dac_value=False, dac_offset=32768):
+        if use_dac_value:
+            digital = value
+        else:
+            digital = int((value+self.offset)/_FULL_SCALE *
+                          (1<<16))+dac_offset-32768
         print('AD5675 set', digital, ch)
         high = digital >> 8
         low = digital & 0xFF
