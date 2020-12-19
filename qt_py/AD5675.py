@@ -37,6 +37,7 @@ class AD5675:
         if use_dac_value:
             digital = value
         else:
+            # print('dac_offset', dac_offset)
             digital = int((value+self.offset)/_FULL_SCALE *
                           (1<<16))+dac_offset-32768
         print('AD5675 set', digital, ch)

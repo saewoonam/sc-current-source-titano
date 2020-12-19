@@ -90,6 +90,8 @@ def set_dac(index, value):
         values[index].append(32768)
         dac_offset = 32768
     else:
+        if type(values[index][3])==str:
+            values[index][3] = 32768
         dac_offset = values[index][3]
 
     # print('set_dac', value)
