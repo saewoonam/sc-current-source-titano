@@ -40,7 +40,7 @@ class AD5675:
             # print('dac_offset', dac_offset)
             digital = int((value+self.offset)/_FULL_SCALE *
                           (1<<16))+dac_offset-32768
-        print('AD5675 set', digital, ch)
+        print('AD5675 set', use_dac_value, digital, ch)
         high = digital >> 8
         low = digital & 0xFF
         command = 0x30  # 0x10 will also work since ~LDAC is held low

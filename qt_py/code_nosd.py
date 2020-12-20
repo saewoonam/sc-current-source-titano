@@ -103,7 +103,7 @@ def set_dac(index, value):
     else:
         # print('zero device', index, value)
         dac_value = 0 # or midscale...
-    dac.set(dac_value, index, use_dac_value=dac_value, dac_offset=dac_offset)
+    dac.set(dac_value, index, use_dac_value=False, dac_offset=dac_offset)
     # update display
 
 def check_int(s):
@@ -138,6 +138,8 @@ while True:
                     cmd = command[:-1].upper()
                     if cmd=='N':
                         print('board_name', board_name)
+                    if cmd=='R':
+                        print('READONLY', _READONLY)
             if command.upper()=='S':
                 save_settings(values)
             if command.upper()=='J':
