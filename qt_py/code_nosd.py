@@ -7,6 +7,7 @@ import storage
 import supervisor
 import adafruit_mcp4728
 import AD5675
+import TCA9534A
 from default_values import default_values
 import set_readonly
 
@@ -45,6 +46,11 @@ elif 12 in addresses:
     dac = AD5675.AD5675(i2c, offset=1.25)
 else:
     dac = AD5675.AD5675(None, offset=1.25);
+
+if 56 in addresses:
+    switch = TCA9534A.TCA9534(i2c, 56)
+else:
+    switch = TCA9534A.TCA9534(None, 56)
 
 _SETTINGS_FILENAME = '/DAC.json'
 def to_json(array):
@@ -100,9 +106,11 @@ def set_dac(index, value):
     if values[index][2]:
         # print("bias device", index, value)
         dac_value = (values[index][1] / 100)
+        switch.set_bit(index)
     else:
         # print('zero device', index, value)
-        dac_value = 0 # or midscale...
+        # dac_value = 0 # or midscale...
+        switch.clear_bit(index)
     dac.set(dac_value, index, use_dac_value=False, dac_offset=dac_offset)
     # update display
 
