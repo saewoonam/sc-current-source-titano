@@ -51,8 +51,17 @@ except Exception as e:
     # values = default_values
     # save_settings_json(values)
 
+def disable_all():
+    if switch.probe_for_device():
+        print('set switch to 0')
+        switch.set(0) # set all switches to open
+
+    for i in range(len(values)):
+        values[i][2] = False
+
+
 def set_dac(index, value):
-    if get_status != 7:
+    if get_status() != 7:
         return
     if type(value)==int:
         values[index][1] = value
@@ -103,14 +112,27 @@ board_name = set_readonly.get_name()
 power_status = digitalio.DigitalInOut(board.A0)
 power_status.direction = digitalio.Direction.INPUT
 def get_status():
-    status = power_status.value + (switch.probe_for_device() << 1) + (dac.probe_for_device() << 2)
+    status = power_status.value
+    i2c.try_lock()
+    addresses = i2c.scan()
+    i2c.unlock()
+    status += (56 in addresses) << 1
+    status += (12 in addresses) << 2
+    # status = power_status.value + (switch.probe_for_device() << 1) + (dac.probe_for_device() << 2)
 
-    print('status', status, 'power_status:', power_status.value, 'sw:', switch.probe_for_device(),
-          'dac:', dac.probe_for_device())
+    # print('status', status, 'power_status:', power_status.value, 'sw:', switch.probe_for_device(),
+    #       'dac:', dac.probe_for_device())
+    return status
 
-get_status()
+print('STATUS:', get_status())
 
 while True:
+    status = get_status()
+    if status != 7:
+        # print('STATUS:', status)
+        if (status % 2) == 0:
+            disable_all()
+        time.sleep(1)
     if supervisor.runtime.serial_bytes_available:
         msg = input()
         msg = msg.split(' ', 1);
@@ -132,6 +154,8 @@ while True:
                         print('board_name', board_name)
                     if cmd=='R':
                         print('READONLY', _READONLY)
+                    if cmd=='STATUS':
+                        print('STATUS', get_status())
             if command.upper()=='S':
                 save_settings(values)
             if command.upper()=='J':
