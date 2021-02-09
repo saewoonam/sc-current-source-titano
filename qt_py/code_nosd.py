@@ -5,30 +5,12 @@ import busio
 import digitalio
 import storage
 import supervisor
-import adafruit_mcp4728
 import AD5675
 import TCA9534A
 from default_values import default_values
 import set_readonly
 
 _READONLY = True
-
-def mcp4728_set(dac_value, index):
-    dac_value = int(abs(dac_value) / 3.3 * 65535)
-    if index==0:
-        mcp4728.channel_a.value = dac_value
-    elif index==1:
-        mcp4728.channel_b.value = dac_value
-    elif index==2:
-        mcp4728.channel_c.value = dac_value
-    elif index==3:
-        mcp4728.channel_d.value = dac_value
-
-class fake:
-    def __init__(self):
-        return
-    def set(self, dac_value, index):
-        return
 
 try:
     i2c = busio.I2C(board.SCL, board.SDA)
@@ -38,11 +20,8 @@ try:
 except Exception as e:
     print("problem with i2c", e)
     addresses = []
-print(addresses)
-if 96 in addresses:
-    dac = adafruit_mcp4728.MCP4728(i2c)
-    dac.set = mcp4728_set
-elif 12 in addresses:
+
+if 12 in addresses:
     dac = AD5675.AD5675(i2c, offset=1.25)
 else:
     dac = AD5675.AD5675(None, offset=1.25);
@@ -126,6 +105,11 @@ last_op_time = 0
 step = 0.001
 _READONLY = set_readonly.get_readonly()
 board_name = set_readonly.get_name()
+power_status = digitalio.DigitalInOut(board.A0)
+power_status.direction = digitalio.Direction.INPUT
+# print('power status', power_status.value)
+print('power_status', power_status.value, 'i2c addresses',addresses)
+
 while True:
     if supervisor.runtime.serial_bytes_available:
         msg = input()

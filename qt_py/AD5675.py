@@ -16,8 +16,11 @@ class AD5675:
     """
 
     def __init__(self, i2c_bus, offset=0, address=12):
+        self.i2c_bus = i2c_bus
+        self.device_address = address
         if i2c_bus is not None:
-            self.i2c_device = i2c_device.I2CDevice(i2c_bus, address)
+            self.i2c_device = i2c_device.I2CDevice(i2c_bus, address,
+                                                   probe=False)
         else:
             self.i2c_device = None
         self.offset = offset
@@ -47,3 +50,13 @@ class AD5675:
         if self.i2c_device is not None:
             with self.i2c_device as i2c:
                 i2c.write(bytes([command+ch, high, low]))
+
+    def probe_for_device(self):
+        here = True
+        try:
+            self.i2c_device.__probe_for_device()
+        except ValueError:
+            here = False
+        finally:
+            return here
+
