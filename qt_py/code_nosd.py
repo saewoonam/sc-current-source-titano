@@ -52,8 +52,8 @@ except Exception as e:
     # save_settings_json(values)
 
 def disable_all():
-    if switch.probe_for_device():
-        print('set switch to 0')
+    if (get_status() % 2) == 0:
+        # print('set switch to 0')
         switch.set(0) # set all switches to open
 
     for i in range(len(values)):
