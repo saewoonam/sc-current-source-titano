@@ -21,15 +21,8 @@ except Exception as e:
     print("problem with i2c", e)
     addresses = []
 
-if 12 in addresses:
-    dac = AD5675.AD5675(i2c, offset=1.25)
-else:
-    dac = AD5675.AD5675(None, offset=1.25);
-
-if 56 in addresses:
-    switch = TCA9534A.TCA9534(i2c, 56)
-else:
-    switch = TCA9534A.TCA9534(None, 56)
+dac = AD5675.AD5675(i2c, offset=1.25)
+switch = TCA9534A.TCA9534(i2c, 56)
 
 _SETTINGS_FILENAME = '/DAC.json'
 def to_json(array):
@@ -59,6 +52,8 @@ except Exception as e:
     # save_settings_json(values)
 
 def set_dac(index, value):
+    if get_status != 7:
+        return
     if type(value)==int:
         values[index][1] = value
         value = values[index]
@@ -107,8 +102,13 @@ _READONLY = set_readonly.get_readonly()
 board_name = set_readonly.get_name()
 power_status = digitalio.DigitalInOut(board.A0)
 power_status.direction = digitalio.Direction.INPUT
-# print('power status', power_status.value)
-print('power_status', power_status.value, 'i2c addresses',addresses)
+def get_status():
+    status = power_status.value + (switch.probe_for_device() << 1) + (dac.probe_for_device() << 2)
+
+    print('status', status, 'power_status:', power_status.value, 'sw:', switch.probe_for_device(),
+          'dac:', dac.probe_for_device())
+
+get_status()
 
 while True:
     if supervisor.runtime.serial_bytes_available:
